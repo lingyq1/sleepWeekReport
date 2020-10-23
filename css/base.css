@@ -1,0 +1,69 @@
+﻿@charset "utf-8";
+/*CSS reset 针对WAP版本的*/ 
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, input, textarea, p, blockquote, th, td,p{ margin: 0; padding: 0; font-family:"微软雅黑"; font-size: 100%; } 
+fieldset, img { border: 0; display:block; }
+address, caption, cite, code, dfn, em, strong, th, var { font-style: normal; font-weight: normal }
+th{font-weight:bold;}
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section{display:block;}
+ol, ul,li { list-style: none; margin:0; padding:0; }
+h1, h2, h3, h4, h5, h6 { font-size: 100%; font-weight: normal }
+blockquote, q{quotes:none;}
+blockquote:before, blockquote:after, q:before, q:after{content:"";content:none;}
+abbr, acronym { border: 0 }
+textarea{resize:none;overflow:hidden;}
+body { font: normal 100% Helvetica, Arial, sans-serif;}
+a { 
+    text-decoration:none;
+	color:#404040;
+	outline:none;
+    _cursor:pointer;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    -ms-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    transition: all 0.3s;
+}
+a:hover { text-decoration:none;}
+a:active{border:none;}
+a.unline{text-decoration:underline;} 
+.lf{ float:left;}
+.rf{ float:right;}
+.clearfix { *zoom:1;}
+.clearfix:after { content: "\200B"; display: block; line-height:0; height: 0; clear: both; visibility:hidden;font-size:0; }
+.clear { clear: both; }
+.vm { vertical-align: middle }
+.pr { position: relative }
+.pa { position: absolute }
+.abs-right { position: absolute; right: 0 }
+.zoom { zoom: 1 }
+.hidden { overflow: hidden }
+.none { display: none } 
+/*不换行*/
+.noWrap{white-space:nowrap;}
+/*自动换行*/
+.break{word-break:break-all;}
+/**下划线***/
+.lineT{text-decoration:line-through;}
+a.hoverlink:hover{text-decoration:underline;}
+.cursor_p {  cursor: pointer; }
+/* p标签里面内容换行 */
+.wordBreak{word-break: break-all;word-wrap: break-word;}
+/* .b{ font-weight:bold;}  */
+.pointer{cursor: pointer;}
+.layout_auto{margin: 0 auto;}
+.relative{position: relative;}
+.absolute{position: absolute;}
+.hide{display: none;}
+.show{display: block;}
+.ulTag{*zoom: 1;}
+.ulTag:after{content: "\200B";display: block;line-height: 0;height: 0;clear: both;visibility: hidden;font-size: 0;}
+.ulTag li{float: left;}
+.ellipsis { 
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  overflow:hidden;
+}
+.center {
+ text-align:center;
+} 
+

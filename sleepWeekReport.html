@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="css/sleepWeekReport.css"/>
+    <link rel="stylesheet" href="css/vant.css"/>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/baseNew.css">
+    <script src="js/jquery-1.12.3.min.js"></script>
+    <script src="js/vue.js"></script>
+    <script src="js/vant.min.js"></script>
+    <title>睡眠分数</title>
+    <script src="js/echarts.js"></script>
+    <script src="js/axios.js"></script>
+    <script src="js/timeString.js"></script>
+</head>
+<body>
+<div id="app">
+    <template id="template">
+        <div class="container">
+            <van-popup v-model="isDevicePickerVisible" round position="bottom">
+                <van-picker title="设备选择" show-toolbar :columns="device_list" @confirm="onDeviceConfirm"
+                            @cancel="onCancel" @change="onChange"/>
+            </van-popup>
+            <van-popup v-model="isTimePickerVisible" round position="bottom">
+                <van-picker title="周期选择" show-toolbar :columns="columns" @confirm="onDateConfirm" @cancel="onCancel"
+                            @change="onChange" :default-index="columns.length-1"/>
+            </van-popup>
+            <div class="nav-background">
+                <div class="nav-bar">
+                    <img src="./pic/icon-close-black.png" class="close">
+                    <span>睡眠周报</span>
+                    <div></div>
+                </div>
+            </div>
+            <div class="head">
+                <div class="card" @click="isDevicePickerVisible = true">
+                    <img src="pic/icon-member.png" class="left">
+                    <span :style="!selectedDevice ? 'color:#bbb' : ''">{{ selectedDevice  || '请选择设备' }}</span>
+                    <img :src="isDevicePickerVisible ? 'pic/icon-arrow-upward.png' : 'pic/icon-arrow-downward.png' "
+                         class="right">
+                </div>
+                <div class="card" @click="isTimePickerVisible = true">
+                    <img src="pic/icon-calendar.png" class="left">
+                    <span :style="!selectedTime ? 'color:#bbb' : ''">{{ selectedTime || '请选择时间' }}</span>
+                    <img :src="isTimePickerVisible ? 'pic/icon-arrow-upward.png' : 'pic/icon-arrow-downward.png' "
+                         class="right">
+                </div>
+
+
+            </div>
+            <div class="chart-card">
+                <div class="title">睡眠综合分析</div>
+                <div id="echart1" class="chart"></div>
+            </div>
+            <div class="chart-card">
+                <div class="title">睡眠时长分析</div>
+                <div id="echart2" class="chart"></div>
+            </div>
+            <div class="chart-card">
+                <div class="title">深睡时长分析</div>
+                <div id="echart3" class="chart"></div>
+            </div>
+            <div class="chart-card">
+                <div class="title">入睡时长分析</div>
+                <div id="echart4" class="chart"></div>
+            </div>
+            <div class="chart-card">
+                <div class="title">起床时长分析</div>
+                <div id="echart5" class="chart"></div>
+            </div>
+            <div class="chart-card">
+                <div class="title">睡眠中断分析</div>
+                <div id="echart6" class="chart"></div>
+            </div>
+
+        </div>
+    </template>
+</div>
+<script src="js/sleepWeekReport.js"></script>
+<script>
+    $(function () {
+
+
+        var mychart1 = echarts.init($('#echart1')[0]);
+        var option1 = {
+            radar: {
+                splitNumber: 1,
+                startAngle: 0,
+                axisLine: {show: false},
+                name: {
+                    textStyle: {
+                        color: 'black',
+                        fontSize: 32
+                    }
+                },
+                indicator: [
+                    {name: '速醒', max: 65},
+                    {name: '深度', max: 60},
+                    {name: '时长', max: 60},
+                    {name: '速睡', max: 60},
+                    {name: '节律', max: 60},
+                    {name: '连贯', max: 60}
+                ]
+            },
+            series: [{
+                type: 'radar',
+                // areaStyle: {normal: {}},
+                data: [{
+                    value: [37, 33, 45, 28, 27, 37],
+                    name: '',
+                    lineStyle: {
+                        color: 'green',
+                        width: 3.5
+                    },
+
+                    areaStyle: {
+                        color: 'rgba(112, 234, 126, 0.61)'
+                    }
+                },
+                    {
+                        value: [30, 45, 37, 50, 40, 30],
+                        name: '',
+                        lineStyle: {
+                            color: 'blue',
+                            width: 3.5,
+                        },
+                        areaStyle: {
+                            color: 'rgba(73, 158, 248, 0.75)',
+                        }
+                    }
+                ]
+            }]
+        };
+        mychart1.setOption(option1);
+
+        var mychart2 = echarts.init($('#echart2')[0]);
+        var option2= {
+
+            tooltip: {
+                //开启tips框框
+                trigger: 'axis',
+                //刻度跟随鼠标显示
+                axisPointer: { type: 'cross' }
+            },
+            grid: {
+                top: 70,
+                left: 60,
+                right: 30,
+                bottom: 50
+            },
+            xAxis: [{
+                type: 'category',
+                boundaryGap: false,
+                show: false,
+                // data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+            }],
+            yAxis: [{
+                type: 'value',
+                data: ["0",  "3",  "5",  "7", "9",  "11"],
+                axisLabel: {
+                    formatter:'{value}h'
+                },
+                offset: 10,
+                axisLine: {
+                    show: false,
+                    lineStyle: {
+                        // 设置y轴轴线颜色
+                        // color: '#fff'
+                        opacity: 1
+                    },
+                    axisLabel: {
+                        color: "#000", //Y轴刻度字颜色
+                        // backgroundColor:"#000"
+                    },
+                    splitNumber: 5,
+                    splitLine: {
+                        show: true
+                    },
+                },
+                axisTick: {
+                    show: false
+                }
+            }],
+
+            series: [{
+                data: [3, 6, 7, 8, 6, 7, 5, 9, 6, 7, 5, 7, 8, 9, 6, 7, 8, 9, 6, 8],
+                type: 'line',
+                areaStyle: {},
+                smooth: true,
+                symbol: 'none',lineStyle: {
+                    color: 'rgba(218,236,190)',
+                },
+                itemStyle: {
+                    // normal: {
+                        color: 'rgba(218,236,190)',
+
+                    // },
+
+                },
+            },
+                {
+                    data: [5, 7, 8, 9, 6, 7, 8, 9, 6, 8, 3, 6, 7, 8, 6, 7, 5, 9, 6, 7],
+                    type: 'line',
+                    areaStyle: {},
+                    smooth: true,
+                    symbol: 'none',
+                    itemStyle: {
+                        normal: {
+                            color: 'rgba(189,189,255)',
+                            lineStyle: {
+                                color: 'rgba(189,189,255)'
+                            },
+                        },
+                    },
+                }
+            ]};
+        mychart2.setOption(option2);
+
+        var mychart3 = echarts.init($('#echart3')[0]);
+        var option3= {
+
+            tooltip: {
+                //开启tips框框
+                trigger: 'axis',
+                //刻度跟随鼠标显示
+                axisPointer: { type: 'cross' }
+            },
+            grid: {
+                top: 70,
+                left: 60,
+                right: 30,
+                bottom: 50
+            },
+            xAxis: [{
+                type: 'category',
+                boundaryGap: false,
+                show: false,
+                // data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+            }],
+            yAxis: [{
+                type: 'value',
+                data: ["0",  "3",  "5",  "7", "9",  "11"],
+                axisLabel: {
+                    formatter:'{value}h'
+                },
+                offset: 10,
+                axisLine: {
+                    show: false,
+                    lineStyle: {
+                        // 设置y轴轴线颜色
+                        // color: '#fff'
+                        opacity: 1
+                    },
+                    axisLabel: {
+                        color: "#000", //Y轴刻度字颜色
+                        // backgroundColor:"#000"
+                    },
+                    splitNumber: 5,
+                    splitLine: {
+                        show: true
+                    },
+                },
+                axisTick: {
+                    show: false
+                }
+            }],
+
+            series: [{
+                data: [3, 6, 7, 8, 6, 7, 5, 9, 6, 7, 5, 7, 8, 9, 6, 7, 8, 9, 6, 8],
+                type: 'line',
+                areaStyle: {},
+                smooth: true,
+                symbol: 'none',lineStyle: {
+                    color: 'rgba(218,236,190)',
+                },
+                itemStyle: {
+                    // normal: {
+                    color: 'rgba(218,236,190)',
+
+                    // },
+
+                },
+            },
+                {
+                    data: [5, 7, 8, 9, 6, 7, 8, 9, 6, 8, 3, 6, 7, 8, 6, 7, 5, 9, 6, 7],
+                    type: 'line',
+                    areaStyle: {},
+                    smooth: true,
+                    symbol: 'none',
+                    itemStyle: {
+                        normal: {
+                            color: 'rgba(189,189,255)',
+                            lineStyle: {
+                                color: 'rgba(189,189,255)'
+                            },
+                        },
+                    },
+                }
+            ]};
+        mychart3.setOption(option3);
+
+        var mychart4 = echarts.init($('#echart4')[0]);
+        var option4= {
+
+            tooltip: {
+                //开启tips框框
+                trigger: 'axis',
+                //刻度跟随鼠标显示
+                axisPointer: { type: 'cross' }
+            },
+            grid: {
+                top: 70,
+                left: 60,
+                right: 30,
+                bottom: 50
+            },
+            xAxis: [{
+                type: 'category',
+                boundaryGap: false,
+                show: false,
+                // data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+            }],
+            yAxis: [{
+                type: 'value',
+                data: ["0",  "3",  "5",  "7", "9",  "11"],
+                axisLabel: {
+                    formatter:'{value}h'
+                },
+                offset: 10,
+                axisLine: {
+                    show: false,
+                    lineStyle: {
+                        // 设置y轴轴线颜色
+                        // color: '#fff'
+                        opacity: 1
+                    },
+                    axisLabel: {
+                        color: "#000", //Y轴刻度字颜色
+                        // backgroundColor:"#000"
+                    },
+                    splitNumber: 5,
+                    splitLine: {
+                        show: true
+                    },
+                },
+                axisTick: {
+                    show: false
+                }
+            }],
+
+            series: [{
+                data: [3, 6, 7, 8, 6, 7, 5, 9, 6, 7, 5, 7, 8, 9, 6, 7, 8, 9, 6, 8],
+                type: 'line',
+                areaStyle: {},
+                smooth: true,
+                symbol: 'none',lineStyle: {
+                    color: 'rgba(218,236,190)',
+                },
+                itemStyle: {
+                    // normal: {
+                    color: 'rgba(218,236,190)',
+
+                    // },
+
+                },
+            },
+                {
+                    data: [5, 7, 8, 9, 6, 7, 8, 9, 6, 8, 3, 6, 7, 8, 6, 7, 5, 9, 6, 7],
+                    type: 'line',
+                    areaStyle: {},
+                    smooth: true,
+                    symbol: 'none',
+                    itemStyle: {
+                        normal: {
+                            color: 'rgba(189,189,255)',
+                            lineStyle: {
+                                color: 'rgba(189,189,255)'
+                            },
+                        },
+                    },
+                }
+            ]};
+        mychart4.setOption(option4);
+
+        var mychart5 = echarts.init($('#echart5')[0]);
+        var option5= {
+
+            tooltip: {
+                //开启tips框框
+                trigger: 'axis',
+                //刻度跟随鼠标显示
+                axisPointer: { type: 'cross' }
+            },
+            grid: {
+                top: 70,
+                left: 60,
+                right: 30,
+                bottom: 50
+            },
+            xAxis: [{
+                type: 'category',
+                boundaryGap: false,
+                show: false,
+                // data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+            }],
+            yAxis: [{
+                type: 'value',
+                data: ["0",  "3",  "5",  "7", "9",  "11"],
+                axisLabel: {
+                    formatter:'{value}h'
+                },
+                offset: 10,
+                axisLine: {
+                    show: false,
+                    lineStyle: {
+                        // 设置y轴轴线颜色
+                        // color: '#fff'
+                        opacity: 1
+                    },
+                    axisLabel: {
+                        color: "#000", //Y轴刻度字颜色
+                        // backgroundColor:"#000"
+                    },
+                    splitNumber: 5,
+                    splitLine: {
+                        show: true
+                    },
+                },
+                axisTick: {
+                    show: false
+                }
+            }],
+
+            series: [{
+                data: [3, 6, 7, 8, 6, 7, 5, 9, 6, 7, 5, 7, 8, 9, 6, 7, 8, 9, 6, 8],
+                type: 'line',
+                areaStyle: {},
+                smooth: true,
+                symbol: 'none',lineStyle: {
+                    color: 'rgba(218,236,190)',
+                },
+                itemStyle: {
+                    // normal: {
+                    color: 'rgba(218,236,190)',
+
+                    // },
+
+                },
+            },
+                {
+                    data: [5, 7, 8, 9, 6, 7, 8, 9, 6, 8, 3, 6, 7, 8, 6, 7, 5, 9, 6, 7],
+                    type: 'line',
+                    areaStyle: {},
+                    smooth: true,
+                    symbol: 'none',
+                    itemStyle: {
+                        normal: {
+                            color: 'rgba(189,189,255)',
+                            lineStyle: {
+                                color: 'rgba(189,189,255)'
+                            },
+                        },
+                    },
+                }
+            ]};
+        mychart5.setOption(option5);
+
+        var mychart6 = echarts.init($('#echart6')[0]);
+        var option6= {
+
+            tooltip: {
+                //开启tips框框
+                trigger: 'axis',
+                //刻度跟随鼠标显示
+                axisPointer: { type: 'cross' }
+            },
+            grid: {
+                top: 70,
+                left: 60,
+                right: 30,
+                bottom: 50
+            },
+            xAxis: [{
+                type: 'category',
+                boundaryGap: false,
+                show: false,
+                // data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+            }],
+            yAxis: [{
+                type: 'value',
+                data: ["0",  "3",  "5",  "7", "9",  "11"],
+                axisLabel: {
+                    formatter:'{value}h'
+                },
+                offset: 10,
+                axisLine: {
+                    show: false,
+                    lineStyle: {
+                        // 设置y轴轴线颜色
+                        // color: '#fff'
+                        opacity: 1
+                    },
+                    axisLabel: {
+                        color: "#000", //Y轴刻度字颜色
+                        // backgroundColor:"#000"
+                    },
+                    splitNumber: 5,
+                    splitLine: {
+                        show: true
+                    },
+                },
+                axisTick: {
+                    show: false
+                }
+            }],
+
+            series: [{
+                data: [3, 6, 7, 8, 6, 7, 5, 9, 6, 7, 5, 7, 8, 9, 6, 7, 8, 9, 6, 8],
+                type: 'line',
+                areaStyle: {},
+                smooth: true,
+                symbol: 'none',lineStyle: {
+                    color: 'rgba(218,236,190)',
+                },
+                itemStyle: {
+                    // normal: {
+                    color: 'rgba(218,236,190)',
+
+                    // },
+
+                },
+            },
+                {
+                    data: [5, 7, 8, 9, 6, 7, 8, 9, 6, 8, 3, 6, 7, 8, 6, 7, 5, 9, 6, 7],
+                    type: 'line',
+                    areaStyle: {},
+                    smooth: true,
+                    symbol: 'none',
+                    itemStyle: {
+                        normal: {
+                            color: 'rgba(189,189,255)',
+                            lineStyle: {
+                                color: 'rgba(189,189,255)'
+                            },
+                        },
+                    },
+                }
+            ]};
+        mychart6.setOption(option6);
+
+
+    })
+</script>
+</body>
+</html>

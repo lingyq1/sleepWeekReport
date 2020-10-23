@@ -1,0 +1,158 @@
+html {
+    font-size: calc(100vw / 750);
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+body {
+    background-color: #f8fbff;
+    font: .22px '\5FAE\8F6F\96C5\9ED1';
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, input, textarea, p, blockquote, th, td,p{ margin: 0; padding: 0; font-family:"微软雅黑"; font-size: 100%; }
+
+.container {
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 104px;
+}
+.nav-bar {
+    width: 650px;
+    height: 88px;
+    padding: 0 50px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 32px;
+    font-weight: bold;
+    position: absolute;
+    bottom: 0;
+}
+.nav-background{
+    background-color: #fff;
+    width: 750px;
+    height: 88px;
+    position: relative;
+}
+
+.nav-bar .close {
+    width: 29px;
+    height: 29px;
+}
+
+.chart-card {
+    width: 654px;
+    height: 580px;
+    background-color: #fff;
+    border-radius: 16px;
+    margin-top: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.head {
+    width: 654px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-top: 50px;
+
+
+}
+.card {
+    width: 316px;
+    height: 80px;
+    border-radius: 16px;
+    background-color: #fff;
+    margin-top: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 28px;
+
+}
+.card .left {
+    width: 49px;
+    height:49px;
+    margin-left: 24px;
+}
+.card .right {
+    width: 24px;
+    height:24px;
+    margin-right: 24px;
+}
+.chart-card .title {
+    width: 590px;
+    height: 108px;
+    padding-right:  32px;
+    padding-left:  32px;
+    padding-top: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #2c2e34;
+    font-size: 32px;
+
+}
+
+.chart {
+    width: 100%;
+    min-height: 400px;
+}
+
+.border {
+    border: 1px blue solid;
+    width: 60px;
+    height: 60px;
+    font-size: 12px;
+}
+
+.card1 {
+    width: 650px;
+    height: 150px;
+    border-radius: 16px;
+    background-color: #fff;
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    font-size: 28px;
+}
+button {
+    /*background-color: #6a6f7a;*/
+    width: 100px;
+    height: 50px;
+    border-radius: 20px;
+}
+
+.van-picker {
+    height: auto;
+}
+
+.van-picker .van-picker__toolbar {
+    height: 114px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.van-picker .van-picker__toolbar .van-picker__title {
+    color: #000;
+    font-weight: bold;
+    font-size: 32px;
+    line-height: 32px;
+    height: 35px;
+}
+
+.van-picker .van-picker__toolbar .van-picker__confirm {
+    color: #3775f6;
+    font-size: 32px;
+}
+
+.van-picker .van-picker__toolbar .van-picker__cancel {
+    color: #2c2e34;
+    font-size: 32px;
+}
